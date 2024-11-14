@@ -55,6 +55,7 @@ jobs:
         uses: ./
 
       - name: Verify install
+        shell: bash
         env:
           BOMCTL_BIN: bomctl${{ runner.os == 'Windows' && '.exe' || '' }}
         run: |

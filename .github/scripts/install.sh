@@ -50,8 +50,9 @@ function download_binary {
       powershell -Command "Add-Type -Assembly System.IO.Compression.FileSystem;
         \$zip = [IO.Compression.ZipFile]::OpenRead('$(basename "${download_url}")');
         \$entry = \$zip.Entries | Where-Object -Property Name -EQ 'bomctl.exe';
-        \$installPath = Join-Path -Path \$env:INPUT_INSTALL_DIR -ChildPath 'bomctl.exe';
-        [IO.Compression.ZipFileExtensions]::ExtractToFile(\$entry, \$installPath)"
+        [IO.Compression.ZipFileExtensions]::ExtractToFile(\$entry, 'bomctl.exe')"
+
+      mv bomctl.exe "${install_path}"
       ;;
     *)
       exit_with_error "Unsupported OS ${RUNNER_OS}."

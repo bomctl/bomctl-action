@@ -39,9 +39,6 @@ jobs:
     name: Install bomctl and test presence in path
     runs-on: ${{ matrix.os }}
 
-    env:
-      BOMCTL_BIN: bomctl${{ runner.os == 'Windows' && '.exe' || '' }}
-
     strategy:
       matrix:
         os:
@@ -58,6 +55,8 @@ jobs:
         uses: ./
 
       - name: Verify install
+        env:
+          BOMCTL_BIN: bomctl${{ runner.os == 'Windows' && '.exe' || '' }}
         run: |
           [[ -x ${{ steps.install.outputs.bomctl-binary }} ]] || false
           [[ $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }} ]] || false

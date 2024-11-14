@@ -53,7 +53,7 @@ jobs:
         uses: ./
 
       - name: Verify install
-        run: test -x ${{ steps.install.output.bomctl-binary }} && bomctl version
+        run: test -x ${{ steps.install.outputs.bomctl-binary }} && bomctl version
 
       - name: Verify install found in PATH
-        run: ([[ $(command -v bomctl) == ${{ steps.install.output.bomctl-binary }} ]] && true) || false
+        run: ([[ $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }} ]] && true) || false

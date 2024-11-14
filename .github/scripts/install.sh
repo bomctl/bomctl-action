@@ -81,7 +81,7 @@ function run_install {
     exit_with_error "jq is required for this action."
   fi
 
-  mkdir --parents "${INPUT_INSTALL_DIR}"
+  mkdir -p "${INPUT_INSTALL_DIR}"
 
   # Resolve "latest" to a concrete release version.
   if [[ ${INPUT_VERSION:=latest} == latest ]]; then

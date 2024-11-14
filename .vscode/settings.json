@@ -1,0 +1,75 @@
+{
+  "[editorconfig][ignore][properties][shellscript]": {
+    "editor.defaultFormatter": "foxundermoon.shell-format",
+    "editor.tabSize": 2
+  },
+
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.tabSize": 2
+  },
+
+  "[markdown]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll.markdownlint": "explicit"
+    },
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint"
+  },
+
+  "[yaml]": {
+    "editor.defaultFormatter": "redhat.vscode-yaml",
+    "editor.tabSize": 2
+  },
+
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.detectIndentation": false,
+  "editor.formatOnPaste": false,
+  "editor.formatOnSave": true,
+  "editor.insertSpaces": true,
+  "editor.rulers": [{ "column": 100 }],
+  "editor.tabSize": 4,
+
+  "files.insertFinalNewline": true,
+  "files.trimFinalNewlines": true,
+  "files.trimTrailingWhitespace": true,
+
+  "git.alwaysSignOff": true,
+  "git.autofetch": true,
+  "git.autoStash": true,
+  "git.enableCommitSigning": true,
+  "git.inputValidationSubjectLength": null,
+  "git.pruneOnFetch": true,
+  "git.terminalAuthentication": true,
+  "git.terminalGitEditor": true,
+  "git.useIntegratedAskPass": true,
+
+  "gitlens.showWelcomeOnInstall": false,
+  "gitlens.showWhatsNewAfterUpgrades": false,
+
+  "git-graph.dialog.applyStash.reinstateIndex": true,
+  "git-graph.dialog.fetchRemote.prune": true,
+  "git-graph.dialog.popStash.reinstateIndex": true,
+  "git-graph.repository.commits.showSignatureStatus": true,
+  "git-graph.repository.fetchAndPrune": true,
+  "git-graph.repository.sign.commits": true,
+  "git-graph.repository.sign.tags": true,
+
+  "json.schemaDownload.enable": true,
+
+  "markdown-preview-enhanced.frontMatterRenderingOption": "code block",
+  "markdown-preview-enhanced.codeBlockTheme": "default.css",
+  "markdown-preview-enhanced.previewTheme": "none.css",
+
+  "markdownlint.config": {
+    "first-line-heading": false,
+    "no-inline-html": false
+  },
+
+  "prettier.printWidth": 120,
+  "prettier.singleQuote": true,
+
+  "shellformat.useEditorConfig": true,
+
+  "yaml.customTags": ["!reference sequence"],
+  "yaml.format.printWidth": 160
+}

@@ -38,12 +38,17 @@ jobs:
   test-install:
     name: Install bomctl and test presence in path
     runs-on: ${{ matrix.os }}
+
+    env:
+      BOMCTL_BIN: bomctl${{ runner.os == 'Windows' && '.exe' || '' }}
+
     strategy:
       matrix:
         os:
           - macos-latest
           - ubuntu-latest
           - windows-latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -53,7 +58,7 @@ jobs:
         uses: ./
 
       - name: Verify install
-        run: test -x ${{ steps.install.outputs.bomctl-binary }} && bomctl version
-
-      - name: Verify install found in PATH
-        run: ([[ $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }} ]] && true) || false
+        run: |
+          [[ -x ${{ steps.install.outputs.bomctl-binary }} ]] || false
+          [[ $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }} ]] || false
+          ${BOMCTL_BIN} version

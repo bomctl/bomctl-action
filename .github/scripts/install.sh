@@ -26,7 +26,7 @@ readonly SCRIPT_DIR
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
 
-log_info "DEBUG: INPUT_INSTALL_DIR=${INPUT_INSTALL_DIR}"
+export
 
 archive_ext=".tar.gz"
 install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"

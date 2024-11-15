@@ -21,12 +21,12 @@
 set -euo pipefail
 
 # ANSI color escape codes
-declare -xr BOLD="\e[1m"
-declare -xr GREEN="\e[32m"
-declare -xr CYAN="\e[1;36m"
-declare -xr RED="\e[1;31m"
-declare -xr RESET="\e[0m"
-declare -xr YELLOW="\e[1;33m"
+declare -xr BOLD="\x1b[1m"
+declare -xr GREEN="\x1b[32m"
+declare -xr CYAN="\x1b[1;36m"
+declare -xr RED="\x1b[1;31m"
+declare -xr RESET="\x1b[0m"
+declare -xr YELLOW="\x1b[1;33m"
 
 shopt -s expand_aliases
 

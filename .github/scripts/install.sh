@@ -24,7 +24,7 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &> /dev/null && pwd)
 readonly SCRIPT_DIR
 
 archive_ext=".tar.gz"
-install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"
+install_path="${INPUT_INSTALL_DIR:=$RUNNER_TEMP/.bomctl}/bomctl"
 install_version="${INPUT_VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"

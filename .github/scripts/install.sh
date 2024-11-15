@@ -23,6 +23,11 @@ set -euo pipefail
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &> /dev/null && pwd)"
 readonly SCRIPT_DIR
 
+# shellcheck source=/dev/null
+source "${SCRIPT_DIR}/utils.sh"
+
+log_info "DEBUG: INPUT_INSTALL_DIR=${INPUT_INSTALL_DIR}"
+
 archive_ext=".tar.gz"
 install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"
 install_version="${INPUT_VERSION:=latest}"
@@ -30,9 +35,6 @@ releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 
 [[ $RUNNER_OS =~ [Ww]indows ]] && archive_ext=".zip"
-
-# shellcheck source=/dev/null
-source "${SCRIPT_DIR}/utils.sh"
 
 function download_binary {
   local download_url="https://github.com/bomctl/bomctl/releases/download/${install_version}/${1}"

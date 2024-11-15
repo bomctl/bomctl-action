@@ -25,6 +25,7 @@ readonly SCRIPT_DIR
 
 archive_ext=".tar.gz"
 install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"
+install_version="${INPUT_VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 
@@ -34,9 +35,9 @@ semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 source "${SCRIPT_DIR}/utils.sh"
 
 function download_binary {
-  local download_url="https://github.com/bomctl/bomctl/releases/download/${INPUT_VERSION}/${1}"
+  local download_url="https://github.com/bomctl/bomctl/releases/download/${install_version}/${1}"
 
-  log_info "Downloading platform-specific version '${INPUT_VERSION}' of bomctl...\n\t${download_url}"
+  log_info "Downloading platform-specific version '${install_version}' of bomctl...\n\t${download_url}"
 
   case ${RUNNER_OS} in
     [Ll]inux | mac[Oo][Ss])
@@ -84,24 +85,24 @@ function run_install {
   mkdir -p "${INPUT_INSTALL_DIR}"
 
   # Resolve "latest" to a concrete release version.
-  if [[ ${INPUT_VERSION:=latest} == latest ]]; then
-    INPUT_VERSION=$(curl_opts "${releases_api}/latest" | jq --raw-output .name)
+  if [[ $install_version == latest ]]; then
+    install_version=$(curl_opts "${releases_api}/latest" | jq --raw-output .name)
 
-    log_info "Resolved 'latest' to version ${INPUT_VERSION}"
+    log_info "Resolved 'latest' to version ${install_version}"
   fi
 
   # Perform go install if requested version doesn't match tag pattern.
-  if [[ ! $INPUT_VERSION =~ $semver_pattern ]]; then
-    log_info "Performing go install of github.com/bomctl/bomctl@${INPUT_VERSION}"
+  if [[ ! $install_version =~ $semver_pattern ]]; then
+    log_info "Performing go install of github.com/bomctl/bomctl@${install_version}"
 
-    GOBIN="${INPUT_INSTALL_DIR}" go install "github.com/bomctl/bomctl@${INPUT_VERSION}"
+    GOBIN="${INPUT_INSTALL_DIR}" go install "github.com/bomctl/bomctl@${install_version}"
 
     return
   fi
 
-  log_info "Custom bomctl version '${INPUT_VERSION}' requested"
+  log_info "Custom bomctl version '${install_version}' requested"
 
-  download_binary "bomctl_${INPUT_VERSION#v}_$(resolve_os)_$(resolve_arch)${archive_ext}"
+  download_binary "bomctl_${install_version#v}_$(resolve_os)_$(resolve_arch)${archive_ext}"
 }
 
 run_install
@@ -113,4 +114,5 @@ fi
 log_info "Successfully installed bomctl to\n\t${install_path}"
 
 echo "bomctl-binary=${install_path}" >> "${GITHUB_OUTPUT}"
+echo "bomctl-version=${install_version}" >> "${GITHUB_OUTPUT}"
 echo "${INPUT_INSTALL_DIR}" >> "${GITHUB_PATH}"

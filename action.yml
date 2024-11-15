@@ -41,6 +41,9 @@ outputs:
   bomctl-binary:
     description: Path to installed bomctl binary
     value: ${{ steps.install.outputs.bomctl-binary }}
+  bomctl-version:
+    description: Version of installed bomctl binary
+    value: ${{ steps.install.outputs.bomctl-version }}
 
 runs:
   using: composite

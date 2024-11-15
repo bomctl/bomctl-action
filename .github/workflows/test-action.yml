@@ -36,7 +36,7 @@ permissions:
 
 jobs:
   test-install:
-    name: Install bomctl and test presence in path
+    name: Install bomctl and test presence in PATH
     runs-on: ${{ matrix.os }}
 
     strategy:
@@ -45,22 +45,55 @@ jobs:
           - macos-latest
           - ubuntu-latest
           - windows-latest
+        install-dir:
+          - ""
+          - ${{ github.workspace }}/.bin
+        version:
+          - ""
+          - v0.4.1
+          - main
+          - 9eadeed6d3ce0cdc1525e6d55a0aede09e762090
 
     steps:
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
+      - name: Set up Go
+        if: matrix.version != '' && matrix.version != 'v0.4.1'
+        uses: actions/setup-go@41dfa10bad2bb2ae585af6ee5bb4d7d973ad74ed # v5.1.0
+        with:
+          check-latest: true
+          cache: false
+
       - name: Install bomctl
         id: install
         uses: ./
+        with:
+          install-dir: ${{ matrix.install-dir }}
 
-      - name: Verify installed binary exists and is executable
+      - name: Export installed binary path
         shell: bash
-        run: test -x ${{ steps.install.outputs.bomctl-binary }}
+        run: echo "BOMCTL_BIN=${{ steps.install.outputs.bomctl-binary }}" >> $GITHUB_ENV
 
-      - name: Verify install found in PATH
+      - name: Verify installed binary
         shell: bash
-        run: test $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }}
+        run: |
+          source .github/scripts/utils.sh
+
+          log_info "Verifying installed binary exists and is executable..."
+          if [[ ! -x $BOMCTL_BIN ]]; then
+            exit_with_error "Install does not exist or can't be executed"
+          fi
+
+          log_info "Verifying installed binary found in PATH..."
+          if [[ $(command -v bomctl) != $BOMCTL_BIN ]]; then
+            exit_with_error "Not found in PATH or installed to wrong location"
+          fi
+
+          log_info "Verifying binary was installed into specified install-dir..."
+          if [[ $BOMCTL_BIN != ${{ matrix.install-dir || $HOME/.bomctl }}/bomctl ]]; then
+            exit_with_error "Install path does not match expected path"
+          fi
 
       - name: Verify version subcommand
         shell: bash

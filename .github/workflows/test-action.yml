@@ -91,7 +91,7 @@ jobs:
           fi
 
           log_info "Verifying binary was installed into specified install-dir..."
-          if [[ $BOMCTL_BIN != ${{ matrix.install-dir || $HOME/.bomctl }}/bomctl ]]; then
+          if [[ $BOMCTL_BIN != ${{ matrix.install-dir || format('{0}/.bomctl', env.HOME) }}/bomctl ]]; then
             exit_with_error "Install path does not match expected path"
           fi
 

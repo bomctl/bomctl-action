@@ -47,7 +47,7 @@ jobs:
 
         install-dir:
           - ""
-          - ${{ github.workspace }}/.bin
+          - ./.bin
 
         version:
           - ""

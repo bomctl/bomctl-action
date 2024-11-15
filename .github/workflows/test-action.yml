@@ -94,6 +94,9 @@ jobs:
           expected="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl"
           [[ $expected != /* ]] && expected="${GITHUB_WORKSPACE}/${expected#.\/}"
 
+          log_info "DEBUG: expected       $expected"
+          log_info "DEBUG: BOMCTL_BIN     $BOMCTL_BIN"
+
           log_info "Verifying binary was installed into specified install-dir..."
           if [[ $BOMCTL_BIN != $expected ]]; then
             exit_with_error "Install path does not match expected path"

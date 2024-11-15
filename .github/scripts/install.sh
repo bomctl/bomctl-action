@@ -26,8 +26,11 @@ readonly SCRIPT_DIR
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
 
+# Resolve relative install-dir path to absolute.
+[[ ${INSTALL_DIR:=$HOME/.bomctl} != /* ]] && INSTALL_DIR="${GITHUB_WORKSPACE}/${INSTALL_DIR#.\/}"
+
 archive_ext=".tar.gz"
-install_path="${INSTALL_DIR:=$HOME/.bomctl}/bomctl"
+install_path="${INSTALL_DIR}/bomctl"
 install_version="${VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"

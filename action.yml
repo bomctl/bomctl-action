@@ -34,6 +34,7 @@ inputs:
     required: false
   install-dir:
     description: Path of bomctl install directory (will be created if it doesn't exist)
+    default: $HOME/.bomctl
     required: false
 
 outputs:

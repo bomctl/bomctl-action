@@ -51,4 +51,7 @@ runs:
     - name: Install bomctl
       id: install
       shell: bash
+      env:
+        INSTALL_DIR: ${{ inputs.install-dir }}
+        VERSION: ${{ inputs.version }}
       run: .github/scripts/install.sh

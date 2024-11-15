@@ -26,11 +26,9 @@ readonly SCRIPT_DIR
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
 
-export
-
 archive_ext=".tar.gz"
-install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"
-install_version="${INPUT_VERSION:=latest}"
+install_path="${INSTALL_DIR:=$HOME/.bomctl}/bomctl"
+install_version="${VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 
@@ -43,7 +41,7 @@ function download_binary {
 
   case ${RUNNER_OS} in
     [Ll]inux | mac[Oo][Ss])
-      curl_opts "${download_url}" | tar --extract --gzip --directory "${INPUT_INSTALL_DIR}" bomctl
+      curl_opts "${download_url}" | tar --extract --gzip --directory "${INSTALL_DIR}" bomctl
       ;;
     [Ww]indows)
       curl_opts "${download_url}" --remote-name
@@ -84,7 +82,7 @@ function run_install {
     exit_with_error "jq is required for this action."
   fi
 
-  mkdir -p "${INPUT_INSTALL_DIR}"
+  mkdir -p "${INSTALL_DIR}"
 
   # Resolve "latest" to a concrete release version.
   if [[ $install_version == latest ]]; then
@@ -97,7 +95,7 @@ function run_install {
   if [[ ! $install_version =~ $semver_pattern ]]; then
     log_info "Performing go install of github.com/bomctl/bomctl@${install_version}"
 
-    GOBIN="${INPUT_INSTALL_DIR}" go install "github.com/bomctl/bomctl@${install_version}"
+    GOBIN="${INSTALL_DIR}" go install "github.com/bomctl/bomctl@${install_version}"
 
     return
   fi
@@ -117,4 +115,4 @@ log_info "Successfully installed bomctl to\n\t${install_path}"
 
 echo "bomctl-binary=${install_path}" >> "${GITHUB_OUTPUT}"
 echo "bomctl-version=${install_version}" >> "${GITHUB_OUTPUT}"
-echo "${INPUT_INSTALL_DIR}" >> "${GITHUB_PATH}"
+echo "${INSTALL_DIR}" >> "${GITHUB_PATH}"

@@ -60,7 +60,8 @@ jobs:
 
       - name: Verify install found in PATH
         shell: bash
-        run: test $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }}
+        run: echo -n "command -v bomctl ==> " && command -v bomctl &&
+          test $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }}
 
       - name: Verify version subcommand
         shell: bash

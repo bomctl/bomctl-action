@@ -33,6 +33,7 @@ releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 
 [[ $RUNNER_OS =~ [Ww]indows ]] && archive_ext=".zip"
+[[ $install_path != /* ]] && install_path="${GITHUB_WORKSPACE}/${install_path#.\/}"
 
 function download_binary {
   local download_url="https://github.com/bomctl/bomctl/releases/download/${install_version}/${1}"

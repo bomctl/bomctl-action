@@ -74,12 +74,10 @@ jobs:
           install-dir: ${{ matrix.install-dir }}
           version: ${{ matrix.version }}
 
-      - name: Export installed binary path
-        shell: bash
-        run: echo "BOMCTL_BIN=${{ steps.install.outputs.bomctl-binary }}" >> $GITHUB_ENV
-
       - name: Verify installed binary
         shell: bash
+        env:
+          BOMCTL_BIN: ${{ steps.install.outputs.bomctl-binary }}
         run: |
           source .github/scripts/utils.sh
 
@@ -92,6 +90,9 @@ jobs:
           if [[ $(command -v bomctl) != $BOMCTL_BIN ]]; then
             exit_with_error "Not found in PATH or installed to wrong location"
           fi
+
+          expected="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl }}"
+          [[ $expected != /* ]] && expected="${GITHUB_WORKSPACE}/${expected#.\/}"
 
           log_info "Verifying binary was installed into specified install-dir..."
           if [[ $BOMCTL_BIN != ${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl ]]; then

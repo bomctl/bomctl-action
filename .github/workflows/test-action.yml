@@ -54,11 +54,14 @@ jobs:
         id: install
         uses: ./
 
-      - name: Verify install
+      - name: Verify installed binary exists and is executable
         shell: bash
-        env:
-          BOMCTL_BIN: bomctl${{ runner.os == 'Windows' && '.exe' || '' }}
-        run: |
-          [[ -x ${{ steps.install.outputs.bomctl-binary }} ]] || false
-          [[ $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }} ]] || false
-          ${BOMCTL_BIN} version
+        run: test -x ${{ steps.install.outputs.bomctl-binary }}
+
+      - name: Verify install found in PATH
+        shell: bash
+        run: test $(command -v bomctl) == ${{ steps.install.outputs.bomctl-binary }}
+
+      - name: Verify version subcommand
+        shell: bash
+        run: bomctl version

@@ -24,13 +24,11 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]:-$0}")" &> /dev/null && pwd)
 readonly SCRIPT_DIR
 
 archive_ext=".tar.gz"
-binary_ext=""
-
-[[ $RUNNER_OS =~ [Ww]indows ]] && archive_ext=".zip" && binary_ext=".exe"
-
-install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl${binary_ext}"
+install_path="${INPUT_INSTALL_DIR:=$HOME/.bomctl}/bomctl"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
+
+[[ $RUNNER_OS =~ [Ww]indows ]] && archive_ext=".zip"
 
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
@@ -50,9 +48,9 @@ function download_binary {
       powershell -Command "Add-Type -Assembly System.IO.Compression.FileSystem;
         \$zip = [IO.Compression.ZipFile]::OpenRead('$(basename "${download_url}")');
         \$entry = \$zip.Entries | Where-Object -Property Name -EQ 'bomctl.exe';
-        [IO.Compression.ZipFileExtensions]::ExtractToFile(\$entry, 'bomctl.exe')"
+        [IO.Compression.ZipFileExtensions]::ExtractToFile(\$entry, 'bomctl')"
 
-      mv bomctl.exe "${install_path}"
+      mv bomctl "${install_path}"
       ;;
     *)
       exit_with_error "Unsupported OS ${RUNNER_OS}."
@@ -114,5 +112,5 @@ fi
 
 log_info "Successfully installed bomctl to\n\t${install_path}"
 
-echo "bomctl-binary=${INPUT_INSTALL_DIR}/bomctl${binary_ext}" >> "${GITHUB_OUTPUT}"
+echo "bomctl-binary=${install_path}" >> "${GITHUB_OUTPUT}"
 echo "${INPUT_INSTALL_DIR}" >> "${GITHUB_PATH}"

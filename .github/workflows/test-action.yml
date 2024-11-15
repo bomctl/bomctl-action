@@ -47,7 +47,7 @@ jobs:
 
         install-dir:
           - ""
-          - $GITHUB_WORKSPACE/.bin
+          - .bin
 
         version:
           - ""
@@ -72,6 +72,7 @@ jobs:
         uses: ./
         with:
           install-dir: ${{ matrix.install-dir }}
+          version: ${{ matrix.version }}
 
       - name: Export installed binary path
         shell: bash

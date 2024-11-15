@@ -91,7 +91,7 @@ jobs:
             exit_with_error "Not found in PATH or installed to wrong location"
           fi
 
-          expected="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl }}"
+          expected="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl"
           [[ $expected != /* ]] && expected="${GITHUB_WORKSPACE}/${expected#.\/}"
 
           log_info "Verifying binary was installed into specified install-dir..."

@@ -112,6 +112,7 @@ jobs:
       - name: Run fetch command
         uses: ./
         with:
+          version: main
           command: fetch
           args: --verbose
             https://github.com/bomctl/bomctl/releases/download/v0.4.1/bomctl_0.4.1_darwin_arm64.tar.gz.cdx.json
@@ -120,6 +121,7 @@ jobs:
       - name: Run list command
         uses: ./
         with:
+          version: main
           command: list
 
   test-export:
@@ -139,6 +141,7 @@ jobs:
       - name: Run with command and exports
         uses: ./
         with:
+          version: main
           command: fetch
           args: --verbose
             https://github.com/bomctl/bomctl/releases/download/v0.4.1/bomctl_0.4.1_darwin_arm64.tar.gz.cdx.json

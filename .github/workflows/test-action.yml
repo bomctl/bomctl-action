@@ -77,7 +77,7 @@ jobs:
       - name: Verify installed binary
         shell: bash
         env:
-          BOMCTL_BIN: ${{ inputs.install-dir }}/bomctl
+          BOMCTL_BIN: ${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl
         run: |
           source .github/scripts/utils.sh
 

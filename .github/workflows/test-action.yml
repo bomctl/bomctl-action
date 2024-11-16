@@ -76,10 +76,10 @@ jobs:
 
       - name: Verify installed binary
         shell: bash
-        env:
-          BOMCTL_BIN: ${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl
         run: |
           source .github/scripts/utils.sh
+
+          BOMCTL_BIN="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl"
 
           log_info "Verifying installed binary exists and is executable..."
           if [[ ! -x $BOMCTL_BIN ]]; then

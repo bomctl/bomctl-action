@@ -26,17 +26,13 @@ readonly SCRIPT_DIR
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
 
-# Resolve relative install-dir path to absolute.
-[[ ${INSTALL_DIR:=$HOME/.bomctl} != /* ]] && INSTALL_DIR="${GITHUB_WORKSPACE}/${INSTALL_DIR#.\/}"
-
 archive_ext=".tar.gz"
-install_path="${INSTALL_DIR}/bomctl"
+install_path="${INSTALL_DIR:=$HOME/.bomctl}/bomctl"
 install_version="${VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 
 [[ $RUNNER_OS =~ [Ww]indows ]] && archive_ext=".zip"
-[[ $install_path != /* ]] && install_path="${GITHUB_WORKSPACE}/${install_path#.\/}"
 
 function download_binary {
   local download_url="https://github.com/bomctl/bomctl/releases/download/${install_version}/${1}"
@@ -117,6 +113,8 @@ fi
 
 log_info "Successfully installed bomctl to\n\t${install_path}"
 
-echo "bomctl-binary=${install_path}" >> "${GITHUB_OUTPUT}"
+# DEBUG
+log_info "readlink -f ${INSTALL_DIR} ==> $(readlink -f "${INSTALL_DIR}")"
+
 echo "bomctl-version=${install_version}" >> "${GITHUB_OUTPUT}"
 echo "${INSTALL_DIR}" >> "${GITHUB_PATH}"

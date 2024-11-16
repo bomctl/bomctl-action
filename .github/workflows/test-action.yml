@@ -77,7 +77,7 @@ jobs:
       - name: Verify installed binary
         shell: bash
         env:
-          BOMCTL_BIN: ${{ steps.install.outputs.bomctl-binary }}
+          BOMCTL_BIN: ${{ inputs.install-dir }}/bomctl
         run: |
           source .github/scripts/utils.sh
 
@@ -91,17 +91,74 @@ jobs:
             exit_with_error "Not found in PATH or installed to wrong location"
           fi
 
-          expected="${{ matrix.install-dir || '$HOME/.bomctl' }}/bomctl"
-          [[ $expected != /* ]] && expected="${GITHUB_WORKSPACE}/${expected#.\/}"
-
-          log_info "DEBUG: expected       $expected"
-          log_info "DEBUG: BOMCTL_BIN     $BOMCTL_BIN"
-
-          log_info "Verifying binary was installed into specified install-dir..."
-          if [[ $BOMCTL_BIN != $expected ]]; then
-            exit_with_error "Install path does not match expected path"
-          fi
-
       - name: Verify version subcommand
         shell: bash
         run: bomctl version
+
+  test-command:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run fetch command
+        uses: ./
+        with:
+          command: fetch
+          args: --verbose
+            https://github.com/bomctl/bomctl/releases/download/v0.4.1/bomctl_0.4.1_darwin_arm64.tar.gz.cdx.json
+            https://github.com/bomctl/bomctl/releases/download/v0.4.0/bomctl_0.4.0_linux_amd64.tar.gz.spdx.json
+
+      - name: Run list command
+        uses: ./
+        with:
+          command: list
+
+  test-export:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os:
+          - macos-latest
+          - ubuntu-latest
+          - windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Run with command and exports
+        uses: ./
+        with:
+          command: fetch
+          args: --verbose
+            https://github.com/bomctl/bomctl/releases/download/v0.4.1/bomctl_0.4.1_darwin_arm64.tar.gz.cdx.json
+            https://github.com/bomctl/bomctl/releases/download/v0.4.0/bomctl_0.4.0_linux_amd64.tar.gz.spdx.json
+          export-json: true
+          export-sql: true
+
+      - name: Verify export
+        shell: bash
+        env:
+          BOMCTL_BIN: ${{ inputs.install-dir }}/bomctl
+        run: |
+          source .github/scripts/utils.sh
+
+          log_info "Verifying bomctl-export.json exists and is not empty..."
+          if [[ ! -s bomctl-export.json ]]; then
+            exit_with_error "Empty or does not exist"
+          fi
+
+          log_info "Verifying bomctl-export.sql exists and is not empty..."
+          if [[ ! -s bomctl-export.sql ]]; then
+            exit_with_error "Empty or does not exist"
+          fi

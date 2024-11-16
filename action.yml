@@ -112,11 +112,11 @@ runs:
       shell: bash
       run: |
         source .github/scripts/utils.sh
-        export_db_json "${{ join(fromJSON('[inputs.database-dir || ".", "bomctl.db"]'), '/') }}"
+        export_db_json "${{ join(fromJSON(format('["{0}", "bomctl.db"]', inputs.database-dir || '.')), '/') }}"
 
     - name: Export database to SQL script
       if: fromJSON(inputs.export-sql)
       shell: bash
       run: |
         source .github/scripts/utils.sh
-        export_db_sql "${{ join(fromJSON('[inputs.database-dir || ".", "bomctl.db"]'), '/') }}"
+        export_db_sql "${{ join(fromJSON(format('["{0}", "bomctl.db"]', inputs.database-dir || '.')), '/') }}"

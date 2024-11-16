@@ -26,19 +26,6 @@ readonly SCRIPT_DIR
 # shellcheck source=/dev/null
 source "${SCRIPT_DIR}/utils.sh"
 
-readonly OLD_IFS="${IFS}"
-
-supported_cmds=(alias export fetch import list merge push tag version)
-
-IFS="|" pattern=${supported_cmds[*]}
-IFS="${OLD_IFS}"
-
-if [[ ! ${BOMCTL_COMMAND:=version} =~ (^$pattern) ]]; then
-  IFS=","
-  exit_with_error \
-    "Unsupported command: ${BOMCTL_COMMAND}. Supported subcommands: [${supported_cmds[*]}]"
-fi
-
 # Convert input args string to array.
 IFS=" " read -r -a BOMCTL_ARGS <<< "${BOMCTL_ARGS:=}"
 
@@ -46,6 +33,6 @@ if [[ -n ${DATABASE_DIR:=} ]]; then
   BOMCTL_ARGS+=(--cache-dir "${DATABASE_DIR}")
 fi
 
-log_info "Running command: bomctl ${BOMCTL_COMMAND} ${BOMCTL_ARGS[*]}..."
+log_info "Running command: bomctl ${BOMCTL_COMMAND:=version} ${BOMCTL_ARGS[*]}..."
 
 bomctl "$BOMCTL_COMMAND" "${BOMCTL_ARGS[@]}"

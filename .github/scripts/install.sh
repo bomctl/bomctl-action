@@ -95,7 +95,7 @@ function run_install {
   if [[ ! $install_version =~ $semver_pattern ]]; then
     log_info "Performing go install of github.com/bomctl/bomctl@${install_version}"
 
-    GOBIN="${INSTALL_DIR}" go install "github.com/bomctl/bomctl@${install_version}"
+    GOBIN=$(readlink -f "${INSTALL_DIR}") go install "github.com/bomctl/bomctl@${install_version}"
 
     return
   fi

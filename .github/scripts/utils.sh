@@ -57,11 +57,12 @@ function export_db_json {
 
     [[ -z $rows ]] && rows="[]"
 
+    table_dump=$(printf '{"%s": %s}' "$table" "$rows")
     json_dump=$(
-      echo "$rows" | jq --stream \
+      jq --null-input \
+        --argjson table_dump "${table_dump}" \
         --argjson json_dump "${json_dump}" \
-        --arg table "${table}" \
-        '$json_dump | .[$table] += [fromstream(1|truncate_stream(inputs))]'
+        '$json_dump + $table_dump'
     )
   done
 

@@ -50,15 +50,19 @@ function exit_with_error {
 function export_db_json {
   local db_file=$1
   local json_dump="{}"
-  local rows table_dump
+  local rows
 
   for table in $(sqlite3 "${db_file}" ".tables"); do
     rows=$(sqlite3 "${db_file}" -json "select * from ${table}")
 
     [[ -z $rows ]] && rows="[]"
 
-    table_dump=$(printf '{"%s": %s}' "$table" "$rows")
-    json_dump=$(jq --null-input "${json_dump} + ${table_dump}")
+    json_dump=$(
+      echo "$rows" | jq --stream \
+        --argjson json_dump "${json_dump}" \
+        --arg table "${table}" \
+        '$json_dump | .[$table] += [fromstream(1|truncate_stream(inputs))]'
+    )
   done
 
   echo "${json_dump}" > bomctl-export.json

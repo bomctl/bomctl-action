@@ -57,13 +57,7 @@ function export_db_json {
 
     [[ -z $rows ]] && rows="[]"
 
-    table_dump=$(printf '{"%s": %s}' "$table" "$rows")
-    json_dump=$(
-      jq --null-input \
-        --argjson table_dump "${table_dump}" \
-        --argjson json_dump "${json_dump}" \
-        '$json_dump + $table_dump'
-    )
+    json_dump=$(jq --null-input --from-file <(echo "${json_dump} + {$table: ${rows}}"))
   done
 
   echo "${json_dump}" > bomctl-export.json

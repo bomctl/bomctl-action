@@ -65,7 +65,7 @@ function export_db_json {
 
     [[ -z $rows ]] && rows="[]"
 
-    objects+=("$(printf '{"%s": %s}' "${table}" "${rows}")")
+    objects+=("$(echo "${rows}" | jq --arg table "${table}" '{($table): .}')")
   done
 
   output=$(echo "${objects[*]}" | jq --slurp 'reduce .[] as $obj ({}; . += $obj)')

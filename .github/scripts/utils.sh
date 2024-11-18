@@ -49,31 +49,27 @@ function exit_with_error {
 
 function export_db_json {
   local db_file=$1
-  local json_dump="{}"
+  local objects=()
   local rows
 
-  tables=$(
+  tables="$(
     sqlite3 "${db_file}" \
       "SELECT name FROM sqlite_schema
       WHERE type == 'table'
       AND name NOT LIKE 'sqlite_%'
       ORDER BY name"
-  )
-
-  echo "${json_dump}" > bomctl-export.json
+  )"
 
   for table in $tables; do
-    rows=$(sqlite3 "${db_file}" -json "SELECT * FROM ${table}")
+    rows="$(sqlite3 "${db_file}" -json "SELECT * FROM ${table}")"
 
     [[ -z $rows ]] && rows="[]"
 
-    echo "${rows}" | jq --arg table "${table}" '{($table): .}' > "tmp-${table}.json"
-
-    json_dump=$(jq --slurpfile data "tmp-${table}.json" '. += $data[]' bomctl-export.json)
-    echo "${json_dump}" > bomctl-export.json
-
-    rm "tmp-${table}.json"
+    objects+=("$(printf '{"%s": %s}' "$table" "$rows")")
   done
+
+  output=$(echo "${objects[*]}" | jq --slurp 'reduce .[] as $obj ({}; . += $obj)')
+  echo "$output" > bomctl-export.json
 }
 
 function export_db_sql {

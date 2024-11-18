@@ -52,23 +52,23 @@ function export_db_json {
   local objects=()
   local rows
 
-  tables=$(sqlite3 "${db_file}" "SELECT name FROM sqlite_schema WHERE type == 'table' AND name NOT LIKE 'sqlite_%'")
-
-  # DEBUG
-  log_info "tables:\n${tables}"
+  tables=$(
+    sqlite3 "${db_file}" \
+      "SELECT name FROM sqlite_schema
+      WHERE type == 'table'
+      AND name NOT LIKE 'sqlite_%'
+      ORDER BY name"
+  )
 
   for table in $tables; do
     rows=$(sqlite3 "${db_file}" -json "SELECT * FROM ${table}")
 
     [[ -z $rows ]] && rows="[]"
 
-    objects+=("$( printf '{"%s": %s}' "$table" "$rows")")
+    objects+=("$(printf '{"%s": %s}' "$table" "$rows")")
   done
 
-  # DEBUG
-  log_info "finished creating objects"
-
-  output=$(echo "${objects[@]}" | jq --slurp --sort-keys 'reduce .[] as $obj ({}; . += $obj)')
+  output=$(echo "${objects[@]}" | jq --raw-output --slurp 'reduce .[] as $obj ({}; . += $obj)')
   echo "$output" > bomctl-export.json
 }
 

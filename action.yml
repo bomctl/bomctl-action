@@ -28,7 +28,7 @@ branding:
   color: blue
 
 inputs:
-  version:
+  bomctl-version:
     description: The version of bomctl to install.
       Can be a tagged release, commit SHA, branch name, or "latest".
       A step using the actions/setup-go action must be executed before
@@ -91,7 +91,7 @@ runs:
       shell: bash
       env:
         INSTALL_DIR: ${{ inputs.install-dir }}
-        VERSION: ${{ inputs.version }}
+        BOMCTL_VERSION: ${{ inputs.bomctl-version }}
       run: .github/scripts/install.sh
 
     - name: Run bomctl command

@@ -28,7 +28,7 @@ source "${SCRIPT_DIR}/utils.sh"
 
 archive_ext=".tar.gz"
 install_path="${INSTALL_DIR:=$HOME/.bomctl}/bomctl"
-install_version="${VERSION:=latest}"
+install_version="${BOMCTL_VERSION:=latest}"
 releases_api="https://api.github.com/repos/bomctl/bomctl/releases"
 semver_pattern="^v[0-9]+(\.[0-9]+){0,2}$"
 

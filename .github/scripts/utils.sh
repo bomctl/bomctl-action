@@ -60,12 +60,12 @@ function export_db_json {
       ORDER BY name"
   )"
 
-  for table in $tables; do
+  for table in ${tables//$'\n'/ }; do
     rows="$(sqlite3 "${db_file}" -json "SELECT * FROM ${table}")"
 
     [[ -z $rows ]] && rows="[]"
 
-    objects+=("$(printf '{"%s": %s}' "$table" "$rows")")
+    objects+=("$(printf '{"%s": %s}' "${table}" "${rows}")")
   done
 
   output=$(echo "${objects[*]}" | jq --slurp 'reduce .[] as $obj ({}; . += $obj)')

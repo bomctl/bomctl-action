@@ -68,7 +68,7 @@ function export_db_json {
     objects+=("$(printf '{"%s": %s}' "$table" "$rows")")
   done
 
-  output=$(echo "${objects[@]}" | jq --raw-output --slurp 'reduce .[] as $obj ({}; . += $obj)')
+  output=$(IFS=$'\r\n' echo "${objects[@]}" | jq --slurp 'reduce .[] as $obj ({}; . += $obj)')
   echo "$output" > bomctl-export.json
 }
 

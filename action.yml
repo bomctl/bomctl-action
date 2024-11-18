@@ -103,9 +103,9 @@ runs:
       run: .github/scripts/run-command.sh
 
     - name: Install SQLite
-      if: (fromJSON(inputs.export-json) || fromJSON(inputs.export-sql)) && runner.os != 'Linux'
-      shell: ${{ runner.os == 'Windows' && 'pwsh' || 'bash' }}
-      run: ${{ runner.os == 'Windows' && 'choco' || 'brew' }} install sqlite
+      if: (fromJSON(inputs.export-json) || fromJSON(inputs.export-sql)) && runner.os == 'Windows'
+      shell: pwsh
+      run: choco install sqlite --limit-output --no-progress
 
     - name: Export database to JSON
       if: fromJSON(inputs.export-json)

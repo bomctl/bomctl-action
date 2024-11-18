@@ -60,8 +60,8 @@ function export_db_json {
     objects+=("$( printf '{"%s": %s}' "$table" "$rows")")
   done
 
-  echo "${objects[@]}" | jq --slurp --sort-keys \
-    'reduce .[] as $obj ({}; . += $obj)' > bomctl-export.json
+  output=$(echo "${objects[@]}" | jq --slurp --sort-keys 'reduce .[] as $obj ({}; . += $obj)')
+  echo "$output" > bomctl-export.json
 }
 
 function export_db_sql {

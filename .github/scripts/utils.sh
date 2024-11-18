@@ -49,7 +49,7 @@ function exit_with_error {
 
 function export_db_json {
   local db_file=$1
-  local json_dump="{}"
+  local objects=()
   local rows
 
   for table in $(sqlite3 "${db_file}" ".tables"); do
@@ -57,10 +57,11 @@ function export_db_json {
 
     [[ -z $rows ]] && rows="[]"
 
-    json_dump=$(jq --null-input --from-file <(echo "${json_dump} + {$table: ${rows}}"))
+    objects+=("$( printf '{"%s": %s}' "$table" "$rows")")
   done
 
-  echo "${json_dump}" > bomctl-export.json
+  echo "${objects[@]}" | jq --slurp --sort-keys \
+    'reduce .[] as $obj ({}; . += $obj)' > bomctl-export.json
 }
 
 function export_db_sql {

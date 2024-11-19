@@ -183,26 +183,6 @@ with:
 
 </details>
 
-<!--
-## Customization
-
-See [the documentation](https://github.com/bomctl/bomctl) for supported commands.
-
-### Inputs
-
-The following inputs are optional:
-
-| Input            | Description                                                                                      |
-| :--------------- | :----------------------------------------------------------------------------------------------- |
-| `bomctl-version` | `bomctl` version to install. Defaults to `latest`.                                               |
-| `install-dir`    | Directory in which to install the `bomctl` binary. Defaults to `$HOME/.bomctl`.                  |
-| `command`        | `bomctl` command to run. Defaults to `version`.                                                  |
-| `args`           | Arguments to pass to the `bomctl` command specified. Defaults to `""`.                           |
-| `database-dir`   | Directory in which to create the `bomctl.db` database file. Defaults to `.`.                     |
-| `export-json`    | Export contents of database to `bomctl-export.json` and upload as artifact. Defaults to `false`. |
-| `export-sql`     | Export contents of database to `bomctl-export.sql` and upload as artifact. Defaults to `false`.  |
--->
-
 ## Outputs
 
 | Output           | Description                                                    |

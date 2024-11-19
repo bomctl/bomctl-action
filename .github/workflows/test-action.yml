@@ -21,9 +21,6 @@
 name: test-bomctl-action
 
 on:
-  push: # For testing, remove before merge
-    branches: "*"
-
   pull_request:
     branches: main
     types:

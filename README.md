@@ -22,13 +22,44 @@ For available `bomctl` releases, see <https://github.com/bomctl/bomctl/releases>
 
 This action currently supports GitHub-hosted Linux, macOS and Windows runners (self-hosted runners may not work).
 
-Add the following entry to your Github workflow YAML file:
+<details>
+<summary>Basic Example</summary>
 
 ```yaml
-uses: bomctl/bomctl-action@v0.0.1
-with:
-  bomctl-version: v0.4.1 # optional
+jobs:
+  bomctl:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: ^1.23.0
+          check-latest: true
+          cache: false
+
+      - name: Run fetch command
+        uses: bomctl/bomctl-action@v0.0.1
+        with:
+          bomctl-version: main
+          command: fetch
+          args: --verbose
+            https://github.com/bomctl/bomctl/releases/download/v0.4.1/bomctl_0.4.1_darwin_arm64.tar.gz.cdx.json
+            https://github.com/bomctl/bomctl/releases/download/v0.4.0/bomctl_0.4.0_linux_amd64.tar.gz.spdx.json
+
+      - name: Run list command and export database content
+        uses: bomctl/bomctl-action@v0.0.1
+        with:
+          bomctl-version: main
+          command: list
+          export-json: true
+          export-sql: true
 ```
+
+</details>
 
 ## Options
 

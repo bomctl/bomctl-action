@@ -113,8 +113,5 @@ fi
 
 log_info "Successfully installed bomctl to\n\t${install_path}"
 
-# DEBUG
-log_info "readlink -f ${INSTALL_DIR} ==> $(readlink -f "${INSTALL_DIR}")"
-
 echo "bomctl-version=${install_version}" >> "${GITHUB_OUTPUT}"
 echo "${INSTALL_DIR}" >> "${GITHUB_PATH}"

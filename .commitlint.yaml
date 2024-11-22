@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 # SPDX-FileCopyrightText: Copyright © 2024 bomctl a Series of LF Projects, LLC
-# SPDX-FileName: .github/dependabot.yml
+# SPDX-FileName: .commitlint.yaml
 # SPDX-FileType: SOURCE
 # SPDX-License-Identifier: Apache-2.0
 # ----------------------------------------------------------------------------
@@ -17,22 +17,39 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+version: v0.10.1
 
-version: 2
+rules:
+  - body-max-line-length
+  - footer-max-line-length
+  - header-max-length
+  - header-min-length
+  - type-enum
 
-updates:
-  - package-ecosystem: github-actions
-    directory: /
-    open-pull-requests-limit: 10
-    schedule:
-      interval: weekly
-    commit-message:
-      prefix: ":dependabot: chore(deps)"
-    labels:
-      - dependencies
-    groups:
-      actions:
-        update-types:
-          - minor
-          - patch
+settings:
+  body-max-line-length:
+    argument: 72
+
+  footer-max-line-length:
+    argument: 72
+
+  header-max-length:
+    argument: 72
+
+  header-min-length:
+    argument: 10
+
+  type-enum:
+    argument:
+      - bug
+      - build
+      - chore
+      - ci
+      - docs
+      - feat
+      - fix
+      - perf
+      - refactor
+      - revert
+      - style
+      - test

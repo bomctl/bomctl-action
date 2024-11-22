@@ -1,0 +1,129 @@
+# -----------------------------------------------------------------------------
+# SPDX-FileCopyrightText: Copyright © 2024 bomctl a Series of LF Projects, LLC
+# SPDX-FileName: action.yml
+# SPDX-FileType: SOURCE
+# SPDX-License-Identifier: Apache-2.0
+# -----------------------------------------------------------------------------
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+# http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+# -----------------------------------------------------------------------------
+---
+# yaml-language-server: $schema=https://json.schemastore.org/github-action.json
+
+name: bomctl-action
+author: bomctl
+description: Installs bomctl and includes it in your path
+
+branding:
+  icon: database
+  color: blue
+
+inputs:
+  bomctl-version:
+    description: The version of bomctl to install.
+      Can be a tagged release, commit SHA, branch name, or "latest".
+      A step using the actions/setup-go action must be executed before
+      this action when specifying a branch name or commit SHA
+    default: latest
+    required: false
+
+  install-dir:
+    description: Path of bomctl install directory (will be created if it doesn't exist)
+    default: $HOME/.bomctl
+    required: false
+
+  command:
+    description: |
+      Name of the command to run. Must be one of:
+        - alias    Edit the alias for a document
+        - export   Export stored SBOM(s) to filesystem
+        - fetch    Fetch SBOM file(s) from HTTP(S), OCI, or Git URLs
+        - import   Import SBOM file(s) from stdin or local filesystem
+        - list     List SBOM documents in local cache
+        - merge    Merge SBOM documents in local storage
+        - push     Push stored SBOM file to remote URL or filesystem
+        - tag      Edit the tags of a document
+        - version  Show version
+    default: version
+    required: false
+
+  args:
+    description: Arguments that will be passed to the specified command
+    default: ""
+    required: false
+
+  database-dir:
+    description: Directory in which to create the SQLite bomctl.db file
+    default: .
+    required: false
+
+  export-json:
+    description: Export contents of database after bomctl commands are run. The contents will be
+      written to 'bomctl-export.json'
+    default: "false"
+    required: false
+
+  export-sql:
+    description: Export contents of database after bomctl commands are run. The contents will be
+      written to 'bomctl-export.sql', a script that can be used to recreate the database
+    default: "false"
+    required: false
+
+outputs:
+  bomctl-version:
+    description: Version of installed bomctl binary
+    value: ${{ steps.install.outputs.bomctl-version }}
+
+runs:
+  using: composite
+  steps:
+    - name: Install bomctl
+      id: install
+      shell: bash
+      env:
+        INSTALL_DIR: ${{ inputs.install-dir }}
+        BOMCTL_VERSION: ${{ inputs.bomctl-version }}
+      run: .github/scripts/install.sh
+
+    - name: Run bomctl command
+      shell: bash
+      env:
+        BOMCTL_COMMAND: ${{ inputs.command }}
+        BOMCTL_ARGS: ${{ inputs.args }}
+        DATABASE_DIR: ${{ inputs.database-dir }}
+      run: .github/scripts/run-command.sh
+
+    - name: Install SQLite
+      if: (fromJSON(inputs.export-json) || fromJSON(inputs.export-sql)) && runner.os == 'Windows'
+      shell: pwsh
+      run: choco install sqlite --limit-output --no-progress
+
+    - name: Export database to JSON
+      if: fromJSON(inputs.export-json)
+      shell: bash
+      run: |
+        source .github/scripts/utils.sh
+        export_db_json "${{ join(fromJSON(format('["{0}", "bomctl.db"]', inputs.database-dir || '.')), '/') }}"
+
+    - name: Export database to SQL script
+      if: fromJSON(inputs.export-sql)
+      shell: bash
+      run: |
+        source .github/scripts/utils.sh
+        export_db_sql "${{ join(fromJSON(format('["{0}", "bomctl.db"]', inputs.database-dir || '.')), '/') }}"
+
+    - name: Upload export artifact
+      if: fromJSON(inputs.export-json) || fromJSON(inputs.export-sql)
+      uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+      with:
+        name: bomctl-action-artifact-${{ hashFiles('bomctl-export.*') }}
+        path: bomctl-export.*

@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 # SPDX-FileCopyrightText: Copyright © 2024 bomctl a Series of LF Projects, LLC
-# SPDX-FileName: .github/dependabot.yml
+# SPDX-FileName: .yamllint
 # SPDX-FileType: SOURCE
 # SPDX-License-Identifier: Apache-2.0
 # ----------------------------------------------------------------------------
@@ -17,22 +17,31 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+extends: default
 
-version: 2
+ignore-from-file: .gitignore
 
-updates:
-  - package-ecosystem: github-actions
-    directory: /
-    open-pull-requests-limit: 10
-    schedule:
-      interval: weekly
-    commit-message:
-      prefix: ":dependabot: chore(deps)"
-    labels:
-      - dependencies
-    groups:
-      actions:
-        update-types:
-          - minor
-          - patch
+locale: en_US.UTF-8
+
+rules:
+  comments:
+    min-spaces-from-content: 1
+
+  braces:
+    forbid: non-empty
+
+  indentation:
+    spaces: 2
+
+  line-length:
+    level: warning
+    max: 120
+
+  quoted-strings:
+    allow-quoted-quotes: true
+    check-keys: true
+    quote-type: double
+    required: only-when-needed
+
+  truthy:
+    check-keys: false

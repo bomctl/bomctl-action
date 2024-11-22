@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------------------
 # SPDX-FileCopyrightText: Copyright © 2024 bomctl a Series of LF Projects, LLC
-# SPDX-FileName: .github/dependabot.yml
+# SPDX-FileName: .markdownlint.yml
 # SPDX-FileType: SOURCE
 # SPDX-License-Identifier: Apache-2.0
 # ----------------------------------------------------------------------------
@@ -17,22 +17,14 @@
 # limitations under the License.
 # ----------------------------------------------------------------------------
 ---
-# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+# yamllint disable-line rule:line-length
+# yaml-language-server: $schema=https://github.com/DavidAnson/markdownlint/raw/main/schema/markdownlint-config-schema.json
 
-version: 2
+# MD013/line-length - Line length
+line-length: false
 
-updates:
-  - package-ecosystem: github-actions
-    directory: /
-    open-pull-requests-limit: 10
-    schedule:
-      interval: weekly
-    commit-message:
-      prefix: ":dependabot: chore(deps)"
-    labels:
-      - dependencies
-    groups:
-      actions:
-        update-types:
-          - minor
-          - patch
+# MD033/no-inline-html - Inline HTML
+no-inline-html: false
+
+# MD041/first-line-heading/first-line-h1 - First line in a file should be a top-level heading
+first-line-heading: false
